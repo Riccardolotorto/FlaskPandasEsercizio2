@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>genere</title>
+</head>
+<body>
+    <form action = "/datiGenereRadio" method="GET">
+        {% for f in elenco %}
+            <input type = "radio" name = "genereRadio" value = "{{f}}">{{f}}<br><br>
+        {%endfor%}
+        <input type="submit" value = "Clicca per conoscere i dati">
+    </form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>film</title>
+</head>
+<body>
+    {% for f in elenco %}
+        <p>{{f}}</p>
+    {%endfor%}
+    <form action = "/datiFilm" method="GET">
+        <p><input type = "text" name = "film">Inserisci il nome di un film</p><br>
+        <input type="submit" value = "Clicca per conoscere i dati">
+    </form>
+</body>
+</html>
