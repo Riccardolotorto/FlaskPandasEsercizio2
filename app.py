@@ -34,7 +34,7 @@ def radio():
 
 @app.route("/genereCheck")
 def check():
-    return render_template("check.html")
+    return render_template("check.html", elenco = list(df["Genres"]))
 
 @app.route("/budget")
 def budget():
@@ -44,6 +44,21 @@ def budget():
 
 @app.route("/grafico")
 def grafico():
+    dfConteggio = df.groupby("Genres").count()[["Title"]].sort_values(by="Title", ascending = False).reset_index()
+    import matplotlib.pyplot as plt
+    import plotly.graph_objs as go
+    import os
+    x = dfConteggio["Title"]
+    y = dfConteggio["Genres"]
+    plt.bar(y, x)
+    plt.xticks(rotation = (80))
+    plt.title('Film per genere')
+    plt.xlabel('Generi')
+    plt.ylabel('Nfilm')
+    dir = "static/images"
+    file_name = "graf.png"
+    save_path = os.path.join(dir, file_name)
+    plt.savefig(save_path)   #trasforma un grafico in un'immagine
     return render_template("grafico.html")
 
 
@@ -74,6 +89,13 @@ def datiGenereRadio():
     dfGenereRadio = df[df["Genres"] == genR]
     hhhh = dfGenereRadio.to_html()
     return render_template("datiGenereRadio.html", tabella = hhhh)
+
+@app.route("/datiGenereCheck", methods = ["GET"])
+def datiGenereCheck():
+    genC = request.args.getlist("gener")
+    dfGenereCheck = df[df["Genres"].isin(genC)]
+    hhhhh = dfGenereCheck.to_html()
+    return render_template("datiGenereCheck.html", tabella = hhhhh)
 
 
 if __name__ == '__main__':
