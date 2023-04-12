@@ -76,28 +76,40 @@ def grafico():
 def datiFilm():
     nome = request.args.get("film")
     dfFilm = df[df["Title"].str.contains(nome)]
-    h = dfFilm.to_html()
+    if len(dfFilm) == 0:
+        return("film non esistente")
+    else:
+        h = dfFilm.to_html()
     return render_template("datiFilm.html", tabella = h)
 
 @app.route("/datiGenere", methods = ["GET"])
 def datiGenere():
     gen = request.args.get("genere")
     dfGenere = df[df["Genres"].str.contains(gen)]
-    hh = dfGenere.to_html()
+    if len(dfGenere) == 0:
+        return("genere non esistente")
+    else:
+        hh = dfGenere.to_html()
     return render_template("datiGenere.html", tabella = hh)
 
 @app.route("/datiGenereTendina", methods = ["GET"])
 def datiGenereTendina():
     genT = request.args.get("genereTendina")
     dfGenereTendina = df[df["Genres"].str.contains(genT)]
-    hhh = dfGenereTendina.to_html()
+    if len(dfGenereTendina) == 0:
+        return("genere non esistente")
+    else:
+        hhh = dfGenereTendina.to_html()
     return render_template("datiGenereTendina.html", tabella = hhh)
 
 @app.route("/datiGenereRadio", methods = ["GET"])
 def datiGenereRadio():
     genR = request.args.get("genereRadio")
     dfGenereRadio = df[df["Genres"].str.contains(genR)]
-    hhhh = dfGenereRadio.to_html()
+    if len(dfGenereRadio) == 0:
+        return("genere non esistente")
+    else:
+        hhhh = dfGenereRadio.to_html()
     return render_template("datiGenereRadio.html", tabella = hhhh)
 
 @app.route("/datiGenereCheck", methods = ["GET"])
@@ -107,7 +119,10 @@ def datiGenereCheck():
     for elemento in genC:
         ris = df[df["Genres"].str.contains(elemento)]
         dfGenereCheck = pd.concat([dfGenereCheck, ris])
-    hhhhh = dfGenereCheck.to_html()
+    if len(dfGenereCheck) == 0:
+        return("genere non esistente")
+    else:
+        hhhhh = dfGenereCheck.to_html()
     return render_template("datiGenereCheck.html", tabella = hhhhh)
 
 
