@@ -22,19 +22,27 @@ def film():
 
 @app.route("/genere")
 def genere():
-    return render_template("genere.html", elenco = list(df["Genres"]))
+    gene = list(set(df[~df["Genres"].str.contains("\|")]["Genres"]))  #~: sta per not
+    gene.sort()
+    return render_template("genere.html", elenco = gene)
 
 @app.route("/genereTendina")
 def tendina():
-    return render_template("tendina.html", elenco = list(df["Genres"]))
+    gene = list(set(df[~df["Genres"].str.contains("\|")]["Genres"]))
+    gene.sort()
+    return render_template("tendina.html", elenco = gene)
 
 @app.route("/genereRadio")
 def radio():
-    return render_template("radio.html", elenco = list(df["Genres"]))
+    gene = list(set(df[~df["Genres"].str.contains("\|")]["Genres"]))
+    gene.sort()
+    return render_template("radio.html", elenco = gene)
 
 @app.route("/genereCheck")
 def check():
-    return render_template("check.html", elenco = list(df["Genres"]))
+    gene = list(set(df[~df["Genres"].str.contains("\|")]["Genres"]))
+    gene.sort()
+    return render_template("check.html", elenco = gene)
 
 @app.route("/budget")
 def budget():
@@ -44,21 +52,23 @@ def budget():
 
 @app.route("/grafico")
 def grafico():
-    dfConteggio = df.groupby("Genres").count()[["Title"]].sort_values(by="Title", ascending = False).reset_index()
+    dfConteggio = df.groupby("Language").count()[["Title"]].sort_values(by="Title", ascending = False).reset_index()
     import matplotlib.pyplot as plt
     import plotly.graph_objs as go
     import os
     x = dfConteggio["Title"]
-    y = dfConteggio["Genres"]
-    plt.bar(y, x)
+    y = dfConteggio["Language"]
+    plt.bar(y, x, label = "NumeroFilm")  #prima stringhe, poi dati
     plt.xticks(rotation = (80))
-    plt.title('Film per genere')
-    plt.xlabel('Generi')
+    plt.title('Film per lingua')
+    plt.xlabel('Lingue')
     plt.ylabel('Nfilm')
+    plt.subplots_adjust(bottom=0.25)  #non taglia i nomi sull'asse x
+    plt.legend()
     dir = "static/images"
     file_name = "graf.png"
     save_path = os.path.join(dir, file_name)
-    plt.savefig(save_path)   #trasforma un grafico in un'immagine
+    plt.savefig(save_path, dpi = 150)   #trasforma un grafico in un'immagine; dpi serve per cambiare le dimensione dell'immagine
     return render_template("grafico.html")
 
 
@@ -79,21 +89,24 @@ def datiGenere():
 @app.route("/datiGenereTendina", methods = ["GET"])
 def datiGenereTendina():
     genT = request.args.get("genereTendina")
-    dfGenereTendina = df[df["Genres"] == genT]
+    dfGenereTendina = df[df["Genres"].str.contains(genT)]
     hhh = dfGenereTendina.to_html()
     return render_template("datiGenereTendina.html", tabella = hhh)
 
 @app.route("/datiGenereRadio", methods = ["GET"])
 def datiGenereRadio():
     genR = request.args.get("genereRadio")
-    dfGenereRadio = df[df["Genres"] == genR]
+    dfGenereRadio = df[df["Genres"].str.contains(genR)]
     hhhh = dfGenereRadio.to_html()
     return render_template("datiGenereRadio.html", tabella = hhhh)
 
 @app.route("/datiGenereCheck", methods = ["GET"])
 def datiGenereCheck():
     genC = request.args.getlist("gener")
-    dfGenereCheck = df[df["Genres"].isin(genC)]
+    dfGenereCheck = pd.DataFrame()
+    for elemento in genC:
+        ris = df[df["Genres"].str.contains(elemento)]
+        dfGenereCheck = pd.concat([dfGenereCheck, ris])
     hhhhh = dfGenereCheck.to_html()
     return render_template("datiGenereCheck.html", tabella = hhhhh)
 
